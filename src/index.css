@@ -1,3 +1,19 @@
+/* === HOMEPAGE HERO TEXT SIZES === */
+.home-hero-title {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -1px;
+}
+
+.home-hero-tagline {
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+}
 /* === SPACE GROTESK FONT FOR SUBHEADINGS === */
 .space-grotesk {
   font-family: "Space Grotesk", sans-serif;
