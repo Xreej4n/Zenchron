@@ -49,8 +49,6 @@ Zenchron is a futuristic and minimal productivity web app designed to help you b
 # ⭐ BONUS:
 ## ➡️ Logo and Name Insights
 
-![Zenchron Logo](./assets/logo.svg)
-
 > ✨ The **Zenchron logo** is a minimalist fusion of a **clock** and a **yin-yang symbol**, representing the union of **time management** and **inner balance** - the core of Zenchron’s philosophy.
 
 > ✨ The name "Zenchron" was crafted to capture the core philosophy of the product:  
