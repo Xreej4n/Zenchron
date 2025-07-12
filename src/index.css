@@ -1,0 +1,833 @@
+/* === NAVBAR ICON STYLES === */
+.navbar-icon {
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin-right: 0.5em;
+}
+
+.pomodoro-button {
+  background: linear-gradient(90deg, #38bdf8 60%, #818cf8 100%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(56,189,248,0.12);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.pomodoro-button:hover {
+  background: linear-gradient(90deg, #818cf8 60%, #38bdf8 100%);
+  box-shadow: 0 4px 18px rgba(56,189,248,0.18);
+  transform: scale(1.04);
+}
+/* === HABIT TRACKER CUSTOM STYLES === */
+.habit-input-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.habit-input {
+  flex: 1;
+  padding: 0.7rem 1.2rem;
+  border-radius: 12px;
+  border: 1.5px solid #38bdf8;
+  background: rgba(255,255,255,0.08);
+  color: #e0e7ef;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+.habit-input:focus {
+  border-color: #818cf8;
+}
+
+.habit-button {
+  background: linear-gradient(90deg, #38bdf8 60%, #818cf8 100%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(56,189,248,0.12);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.habit-button:hover {
+  background: linear-gradient(90deg, #818cf8 60%, #38bdf8 100%);
+  box-shadow: 0 4px 18px rgba(56,189,248,0.18);
+}
+
+.habit-week-info {
+  text-align: center;
+  color: #a5b4fc;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.habit-table-container {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+.habit-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255,255,255,0.03);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(56,189,248,0.10);
+}
+.habit-table th, .habit-table td {
+  padding: 0.7rem 0.9rem;
+  text-align: center;
+}
+.habit-table th {
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: rgba(56,189,248,0.07);
+}
+.habit-table td {
+  color: #e0e7ef;
+  font-size: 1.05rem;
+}
+.habit-table input[type="checkbox"] {
+  accent-color: #38bdf8;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.streak {
+  color: #818cf8;
+  font-size: 0.95rem;
+  margin-left: 0.2rem;
+}
+.habit-history-title {
+  text-align: center;
+  color: #38bdf8;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem 0;
+}
+.habit-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 2rem auto;
+  max-width: 500px;
+}
+.habit-history-card {
+  background: rgba(56,189,248,0.07);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  color: #e0e7ef;
+  box-shadow: 0 1px 8px rgba(56,189,248,0.10);
+}
+.history-entry {
+  color: #a5b4fc;
+  font-size: 0.98rem;
+  margin-left: 0.5rem;
+}
+/* === TAILWIND BASE === */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === GLOBAL STYLES === */
+
+/* Smooth background and text transitions */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Base font and layout */
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 120, 120, 0.3);
+  border-radius: 8px;
+}
+
+/* Theme backgrounds */
+.light {
+  background-color: #f9fafb; /* gray-50 */
+  color: #1f2937; /* gray-800 */
+}
+
+.dark {
+  background-color: #111827; /* gray-900 */
+  color: #f9fafb;
+}
+
+/* Page layout buffer for fixed navbar */
+.page-content {
+  padding-top: 10rem;
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Button hover effect */
+.button-glow:hover {
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6); /* indigo glow */
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* === NAVBAR CUSTOM STYLES === */
+.audiowide-regular {
+  font-family: "Audiowide", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.logout {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+}
+
+.navbar {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  border-radius: 3rem;
+  /* box-shadow removed for flat look */
+  border: 1px solid #4f46e5;
+  transition: all 0.3s ease-in-out;
+  position: fixed;
+  top: 20px;
+  
+ 
+  z-index: 1000;
+  width: 95%;
+  max-width: 0 auto;
+}
+
+/* Title styling */
+.navbar-title {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #e0e7ff;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-title:hover {
+  color: #c7d2fe;
+  transform: scale(1.03);
+}
+
+/* Nav links */
+.navbar-link {
+  color: #e0e7ff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding-right: 7px;
+  padding-left: 7px;
+}
+
+.navbar-link:hover {
+  color: #c7d2fe;
+  text-shadow: 0 0 8px rgba(129, 140, 248, 0.6);
+}
+
+/* Username section */
+.navbar-user {
+  font-weight: bold;
+  color: #e0e7ff;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Smooth transitions for everything */
+body, button, input, a {
+  transition: all 0.25s ease;
+}
+
+/* App background */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #0f172a, #1e3a8a, #030712);
+  color: #f9fafb;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Scrollbar styling (modern browsers) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1e3a8a;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #0ea5e9;
+  border-radius: 10px;
+}
+
+/* Heading styles */
+h1, h2, h3, h4 {
+  font-weight: 800;
+  color: #e0f2fe;
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Button glow effect */
+.button-glow {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+.button-glow:hover {
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+
+/* Input focus ring */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4);
+}
+
+/* Custom checkbox appearance (optional) */
+input[type="checkbox"] {
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+/* Page content wrapper */
+.page-content {
+  padding-top: 100px; /* push below fixed navbar */
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .page-content {
+    padding: 80px 16px;
+  }
+}
+
+.navbar {
+  position: absolute;
+  top: 20px;
+
+  z-index: 1000;
+  width: 95%;
+  max-width: 1200px;
+  padding: 1.2rem 2rem;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.75); /* translucent deep navy */
+  backdrop-filter: blur(12px);
+  /* box-shadow removed for flat look */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* 🌟 Title Styling */
+
+.navbar-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
+  letter-spacing: 0.8px;
+  text-align: center;
+}
+
+/* 🔗 Nav Links */
+.navbar-link {
+  color: #f9fafb;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+/* 🧑 Username Display */
+.navbar-user {
+  color: #a5f3fc;
+  font-weight: 600;
+  padding-right: 2cap;
+}
+
+/* ✨ Button Glow for Logout */
+.button-glow {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+
+}
+.button-glow:hover {
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+}
+
+/* 📱 Responsive */
+@media (min-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+
+  .navbar-title {
+    font-size: 2.8rem;
+  }
+
+  .navbar-link {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+
+  .navbar-title {
+    font-size: 2rem;
+  }
+
+  .navbar-link {
+    font-size: 0.95rem;
+  }
+}
+
+.navbar {
+  position: fixed;
+  top: 16px;
+  z-index: 1000;
+  width: 90%;
+  max-width: 1100px;
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
+  background-color: rgba(15, 23, 42, 0.85); /* Deep blue with opacity */
+  backdrop-filter: blur(10px);
+  /* box-shadow removed for flat look */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🔤 Brand Title */
+.navbar-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* 🔗 Nav Links Container */
+.navbar-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+/* 💡 Link Styling */
+.navbar-link {
+  color: #f1f5f9;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.navbar-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #38bdf8;
+}
+
+/* 👤 Username Text */
+.navbar-user {
+  font-weight: 600;
+  color: #a5f3fc;
+  margin-left: 1cap;
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 1.8rem;
+  }
+
+  .navbar-link {
+    font-size: 0.95rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .navbar {
+    padding: 0.8rem 1rem;
+    width: 95%;
+  }
+
+  .navbar-links {
+    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.auth-wrapper {
+  max-width: 420px;
+  margin: auto;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+  color: #f1f5f9;
+  transition: all 0.3s ease;
+}
+.auth-title {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: 1px;
+}
+.auth-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+.auth-input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+.auth-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #38bdf8, #6366f1);
+  color: white;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.auth-button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+.auth-switch {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+.auth-switch a {
+  color: #38bdf8;
+  font-weight: 500;
+  text-decoration: none;
+}
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 480px) {
+  .auth-wrapper {
+    padding: 2rem 1rem;
+  }
+  .auth-title {
+    font-size: 1.6rem;
+  }
+  .auth-button {
+    font-size: 0.95rem;
+  }
+}
+.habit-wrapper {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(18px);
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px 8px rgba(56,189,248,0.22), 0 1.5px 0 0 #38bdf8;
+  border: 2.5px solid #38bdf8;
+  margin-top: 4.5rem;
+}
+
+/* 📌 Header */
+.habit-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pomodoro-wrapper {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(18px);
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px 8px rgba(56,189,248,0.22), 0 1.5px 0 0 #38bdf8;
+  border: 2.5px solid #38bdf8;
+  margin-top: 4.5rem;
+  text-align: center;
+}
+
+.pomodoro-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  letter-spacing: 0.5px;
+}
+
+.mode-badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+  color: #f9fafb;
+}
+
+.pomodoro-display {
+  font-size: 4rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 6px rgba(255,255,255,0.1);
+}
+
+.pomodoro-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pomodoro-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.pomodoro-button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 16px rgba(56,189,248,0.3);
+}
+
+/* Responsive tweaks */
+@media (max-width: 500px) {
+  .pomodoro-title {
+    font-size: 1.8rem;
+  }
+  .pomodoro-display {
+    font-size: 3rem;
+  }
+  .pomodoro-button {
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+  }
+}
+.todo-wrapper {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(18px);
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px 8px rgba(56,189,248,0.22), 0 1.5px 0 0 #38bdf8;
+  border: 2.5px solid #38bdf8;
+  margin-top: 4.5rem;
+}
+
+/* 📌 Heading */
+.todo-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ✍️ Input row */
+.todo-input-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  color: #f1f5f9;
+}
+
+.todo-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56,189,248,0.4);
+  outline: none;
+}
+
+.todo-button {
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(to right, #38bdf8, #6366f1);
+  color: white;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.todo-button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(56,189,248,0.4);
+}
+
+/* 📄 Task List */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-card {
+  background: rgba(255,255,255,0.04);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.todo-card:hover {
+  background: rgba(255,255,255,0.06);
+  transform: scale(1.01);
+}
+
+.todo-text {
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+}
+
+.todo-card.done .todo-text {
+  text-decoration: line-through;
+  color: #38bdf8;
+}
+
+.todo-delete {
+  background: transparent;
+  color: #f87171;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.todo-delete:hover {
+  color: #ef4444;
+}
+
+/* 📱 Responsive tweaks */
+@media (max-width: 480px) {
+  .todo-title {
+    font-size: 1.8rem;
+  }
+  .todo-button {
+    font-size: 0.9rem;
+  }
+  .todo-input {
+    font-size: 0.95rem;
+  }
+}
+
+
