@@ -1,58 +1,113 @@
-import { useState } from 'react';
-import { FiPlusCircle, FiTrash2, FiCheckSquare } from 'react-icons/fi';
+import { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { FiTrash2 } from "react-icons/fi";
 
 export default function Todo() {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState("");
+  const navigate = useNavigate();
 
-  const addTask = () => {
-    if (newTask.trim()) {
-      setTasks([...tasks, { text: newTask.trim(), done: false }]);
-      setNewTask('');
-    }
+  const auth = getAuth();
+  const db = getFirestore();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const tasksRef = collection(db, "users", user.uid, "tasks");
+        const q = query(tasksRef, orderBy("createdAt", "asc"));
+        const snap = await getDocs(q);
+        setTasks(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      } else {
+        setTasks([]);
+        navigate("/login");
+      }
+    });
+    return unsub;
+  }, [auth, db, navigate]);
+
+  const handleAdd = async () => {
+    const user = auth.currentUser;
+    if (!user || !newTask.trim()) return;
+
+    const tasksRef = collection(db, "users", user.uid, "tasks");
+    const docRef = await addDoc(tasksRef, {
+      text: newTask.trim(),
+      done: false,
+      createdAt: new Date(),
+    });
+
+    setTasks([...tasks, { id: docRef.id, text: newTask.trim(), done: false }]);
+    setNewTask("");
   };
 
-  const toggleTask = (index) => {
+  const handleToggle = async (taskId, idx) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const newStatus = !tasks[idx].done;
+    const taskRef = doc(db, "users", user.uid, "tasks", taskId);
+    await updateDoc(taskRef, { done: newStatus });
+
     const updated = [...tasks];
-    updated[index].done = !updated[index].done;
+    updated[idx].done = newStatus;
     setTasks(updated);
   };
 
-  const deleteTask = (index) => {
-    const updated = tasks.filter((_, i) => i !== index);
-    setTasks(updated);
+  const handleDelete = async (taskId, idx) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const taskRef = doc(db, "users", user.uid, "tasks", taskId);
+    await deleteDoc(taskRef);
+
+    setTasks(tasks.filter((_, i) => i !== idx));
   };
 
   return (
-    <div className="page-content min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 text-white px-4 py-10 flex justify-center">
+    <div className="page-content flex justify-center">
       <div className="todo-wrapper">
-        <h1 className="todo-title">
-          <FiCheckSquare className="inline-block mr-2" size={26} />
-          To-Do List
-        </h1>
+        <h1 className="todo-title">✅ My To-Do List</h1>
 
-        {/* 🧾 Add Task Section */}
         <div className="todo-input-row">
           <input
-            type="text"
-            className="todo-input"
-            placeholder="What's next?"
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Add a task..."
+            className="todo-input"
           />
-          <button className="todo-button" onClick={addTask}>
-            <FiPlusCircle size={18} /> Add
+          <button onClick={handleAdd} className="todo-button">
+            Add
           </button>
         </div>
 
-        {/* 🗒 Task List */}
         <ul className="todo-list">
-          {tasks.map((task, index) => (
-            <li key={index} className={`todo-card ${task.done ? 'done' : ''}`}>
-              <span onClick={() => toggleTask(index)} className="todo-text">
+          {tasks.map((task, idx) => (
+            <li
+              key={task.id}
+              className={`todo-card ${task.done ? "done" : ""}`}
+            >
+              <span
+                onClick={() => handleToggle(task.id, idx)}
+                className="todo-text"
+              >
                 {task.text}
               </span>
-              <button className="todo-delete" onClick={() => deleteTask(index)}>
+              <button
+                onClick={() => handleDelete(task.id, idx)}
+                className="todo-delete"
+              >
                 <FiTrash2 />
               </button>
             </li>

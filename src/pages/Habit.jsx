@@ -1,5 +1,13 @@
-import { useState } from 'react';
-import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import {
+  saveHabitSnapshot,
+  getHabitHistory,
+  updateHabitSnapshot,
+} from "../firebaseHelpers";
+import { auth } from "../firebaseConfig";
 
 export default function Habit() {
   const [habits, setHabits] = useState(["Read", "Exercise"]);
@@ -7,8 +15,11 @@ export default function Habit() {
   const [newHabit, setNewHabit] = useState("");
   const [weekStart, setWeekStart] = useState(getCurrentMonday());
   const [weekHistory, setWeekHistory] = useState([]);
-  const [editingIdx, setEditingIdx] = useState(null); // index of week being edited
-  const [editData, setEditData] = useState(null); // { weekStart, habits }
+  const [editingIdx, setEditingIdx] = useState(null);
+  const [editData, setEditData] = useState(null);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   function getCurrentMonday() {
@@ -19,79 +30,126 @@ export default function Habit() {
     return monday.toISOString().split("T")[0];
   }
 
-  function getCurrentMonday() {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(today.setDate(diff));
-    return monday.toISOString().split("T")[0];
-  }
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const history = await getHabitHistory(firebaseUser.uid);
+        setWeekHistory(history);
+        // Load current week data if exists
+        const currentWeek = history.find((w) => w.weekStart === getCurrentMonday());
+        setTracked(currentWeek ? currentWeek.habits : {});
+      } else {
+        setUser(null);
+        setTracked({});
+        setWeekHistory([]);
+        setHabits(["Read", "Exercise"]);
+        setNewHabit("");
+        setEditingIdx(null);
+        setEditData(null);
+        setWeekStart(getCurrentMonday());
+        navigate("/login");
+      }
+    });
+    return unsub;
+  }, [navigate]);
 
-  const toggleDay = (habit, day) => {
+  // Save to Firebase immediately when checkbox is toggled
+  const toggleDay = async (habit, day) => {
     if (editingIdx !== null) {
-      setEditData(prev => ({
+      setEditData((prev) => ({
         ...prev,
         habits: {
           ...prev.habits,
           [habit]: {
             ...prev.habits[habit],
-            [day]: !prev.habits[habit]?.[day]
-          }
-        }
+            [day]: !prev.habits[habit]?.[day],
+          },
+        },
       }));
       return;
     }
-    setTracked(prev => ({
-      ...prev,
-      [habit]: {
-        ...prev[habit],
-        [day]: !prev[habit]?.[day]
+    setTracked((prev) => {
+      const updated = {
+        ...prev,
+        [habit]: {
+          ...prev[habit],
+          [day]: !prev[habit]?.[day],
+        },
+      };
+      if (user) {
+        saveHabitSnapshot(user.uid, weekStart, updated);
       }
-    }));
+      return updated;
+    });
   };
 
+  // FIX: Save new habit to Firebase immediately
   const addHabit = () => {
     if (editingIdx !== null) return;
     if (newHabit.trim()) {
-      setHabits([...habits, newHabit.trim()]);
+      const updatedHabits = [...habits, newHabit.trim()];
+      setHabits(updatedHabits);
+      setTracked((prev) => {
+        const updatedTracked = {
+          ...prev,
+          [newHabit.trim()]: {},
+        };
+        // Save immediately to Firebase
+        if (user) {
+          saveHabitSnapshot(user.uid, weekStart, updatedTracked);
+        }
+        return updatedTracked;
+      });
       setNewHabit("");
     }
   };
 
-  const calculateStreak = (habit, customTracked = null) => {
-    const data = customTracked || tracked;
-    return days.reduce((count, day) => data[habit]?.[day] ? count + 1 : count, 0);
+  const calculateStreak = (habit, data) => {
+    const source = data || tracked;
+    return days.reduce((acc, day) => acc + (source[habit]?.[day] ? 1 : 0), 0);
   };
 
-  const startNewWeek = () => {
-    const snapshot = { weekStart, habits: tracked };
-    setWeekHistory([...weekHistory, snapshot]);
+  const startNewWeek = async () => {
+    if (!user) return;
+    if (Object.keys(tracked).length === 0) return alert("Nothing to save!");
+    await saveHabitSnapshot(user.uid, weekStart, tracked);
+    const updated = await getHabitHistory(user.uid);
+    setWeekHistory(updated);
     setTracked({});
-    setWeekStart(getCurrentMonday());
+    // Advance to next week (next Monday)
+    const nextMonday = new Date(weekStart);
+    nextMonday.setDate(nextMonday.getDate() + 7);
+    setWeekStart(nextMonday.toISOString().split("T")[0]);
   };
 
-  // Edit week handlers
   const handleEditWeek = (idx) => {
     setEditingIdx(idx);
     setEditData(JSON.parse(JSON.stringify(weekHistory[idx])));
   };
+
   const handleEditCheckbox = (habit, day) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
       habits: {
         ...prev.habits,
         [habit]: {
           ...prev.habits[habit],
-          [day]: !prev.habits[habit]?.[day]
-        }
-      }
+          [day]: !prev.habits[habit]?.[day],
+        },
+      },
     }));
   };
-  const handleSaveEditWeek = () => {
-    setWeekHistory(weekHistory.map((w, i) => i === editingIdx ? editData : w));
+
+  const handleSaveEditWeek = async () => {
+    if (!user) return;
+    await updateHabitSnapshot(user.uid, editData.weekStart, editData.habits);
+    const updated = await getHabitHistory(user.uid);
+    setWeekHistory(updated);
     setEditingIdx(null);
     setEditData(null);
   };
+
   const handleCancelEditWeek = () => {
     setEditingIdx(null);
     setEditData(null);
@@ -110,19 +168,36 @@ export default function Habit() {
             className="habit-input"
             disabled={editingIdx !== null}
           />
-          <button onClick={addHabit} className="habit-button" disabled={editingIdx !== null}>Add Habit</button>
+          <button
+            onClick={addHabit}
+            className="habit-button"
+            disabled={editingIdx !== null}
+          >
+            Add Habit
+          </button>
         </div>
 
-        {/* Week Info Section */}
         {editingIdx === null ? (
           <div className="habit-week-info">
             Current Week Starting: <span>{weekStart}</span>
           </div>
         ) : (
           <div className="habit-week-info bg-yellow-400/90 text-blue-900 px-4 py-2 rounded-lg font-bold text-lg shadow-lg border-2 border-yellow-600 mb-4 flex items-center gap-4">
-            <span>Editing Week: <span>{editData.weekStart}</span></span>
-            <button className="habit-button px-3 py-1 text-sm bg-green-600 hover:bg-green-700 text-white" onClick={handleSaveEditWeek}><FaSave className="inline mr-1" />Save</button>
-            <button className="habit-button px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white" onClick={handleCancelEditWeek}><FaTimes className="inline mr-1" />Cancel</button>
+            <span>
+              Editing Week: <span>{editData.weekStart}</span>
+            </span>
+            <button
+              className="habit-button px-3 py-1 text-sm bg-green-600 hover:bg-green-700 text-white"
+              onClick={handleSaveEditWeek}
+            >
+              <FaSave className="inline mr-1" /> Save
+            </button>
+            <button
+              className="habit-button px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white"
+              onClick={handleCancelEditWeek}
+            >
+              <FaTimes className="inline mr-1" /> Cancel
+            </button>
           </div>
         )}
 
@@ -131,43 +206,41 @@ export default function Habit() {
             <thead>
               <tr>
                 <th>Habit</th>
-                {days.map(day => <th key={day}>{day}</th>)}
+                {days.map((day) => (
+                  <th key={day}>{day}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {editingIdx === null
-                ? habits.map(habit => (
-                    <tr key={habit}>
-                      <td>
-                        {habit} <span className="streak">({calculateStreak(habit)})</span>
+              {(editingIdx === null ? habits : Object.keys(editData.habits)).map(
+                (habit) => (
+                  <tr key={habit}>
+                    <td>
+                      {habit}{" "}
+                      <span className="streak">
+                        ({calculateStreak(habit, editingIdx !== null ? editData.habits : null)})
+                      </span>
+                    </td>
+                    {days.map((day) => (
+                      <td key={day}>
+                        <input
+                          type="checkbox"
+                          checked={
+                            editingIdx !== null
+                              ? editData.habits[habit]?.[day] || false
+                              : tracked[habit]?.[day] || false
+                          }
+                          onChange={() =>
+                            editingIdx !== null
+                              ? handleEditCheckbox(habit, day)
+                              : toggleDay(habit, day)
+                          }
+                        />
                       </td>
-                      {days.map(day => (
-                        <td key={day}>
-                          <input
-                            type="checkbox"
-                            checked={tracked[habit]?.[day] || false}
-                            onChange={() => toggleDay(habit, day)}
-                          />
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                : Object.keys(editData.habits).map(habit => (
-                    <tr key={habit}>
-                      <td>
-                        {habit} <span className="streak">({calculateStreak(habit, editData.habits)})</span>
-                      </td>
-                      {days.map(day => (
-                        <td key={day}>
-                          <input
-                            type="checkbox"
-                            checked={editData.habits[habit]?.[day] || false}
-                            onChange={() => handleEditCheckbox(habit, day)}
-                          />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                    ))}
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -181,16 +254,26 @@ export default function Habit() {
         <h3 className="habit-history-title">Past Weeks</h3>
         <ul className="habit-history-list">
           {weekHistory.map((week, i) => (
-            <li key={i} className="habit-history-card flex items-center justify-between">
+            <li
+              key={week.weekStart}
+              className="habit-history-card flex items-center justify-between"
+            >
               <div>
                 <p>Week Starting: {week.weekStart}</p>
-                {Object.keys(week.habits).map(habit => (
+                {Object.keys(week.habits).map((habit) => (
                   <p key={habit} className="history-entry">
-                    {habit}: {days.filter(day => week.habits[habit][day]).join(", ") || "No entries"}
+                    {habit}:{" "}
+                    {days.filter((day) => week.habits[habit][day]).join(", ") ||
+                      "No entries"}
                   </p>
                 ))}
               </div>
-              <button className="ml-4 p-2 bg-yellow-400 text-blue-900 rounded-full shadow hover:bg-yellow-300 transition" onClick={() => handleEditWeek(i)} title="Edit this week" disabled={editingIdx !== null}>
+              <button
+                className="ml-4 p-2 bg-yellow-400 text-blue-900 rounded-full shadow hover:bg-yellow-300 transition"
+                onClick={() => handleEditWeek(i)}
+                title="Edit this week"
+                disabled={editingIdx !== null}
+              >
                 <FaEdit />
               </button>
             </li>

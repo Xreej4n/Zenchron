@@ -44,7 +44,10 @@ export default function Pomodoro() {
   return (
     <div className="page-content min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center text-white px-4 py-10">
       <div className="pomodoro-wrapper">
-        <h1 className="pomodoro-title">Pomodoro Timer</h1>
+        <h1 className="pomodoro-title">
+          <FiClock className="inline-block mr-2" size={28} />
+          Pomodoro Timer
+        </h1>
 
         {/* Mode badge */}
         <div className={`mode-badge ${mode === 'work' ? 'bg-orange-500' : 'bg-green-600'}`}>
@@ -57,13 +60,13 @@ export default function Pomodoro() {
         {/* Controls */}
         <div className="pomodoro-controls">
           <button
-            className="pomodoro-button"
+            className={`pomodoro-button ${isRunning ? 'bg-yellow-500' : 'bg-sky-600'}`}
             onClick={() => setIsRunning(!isRunning)}
           >
             {isRunning ? <FiPause size={20} /> : <FiPlay size={20} />}
             {isRunning ? 'Pause' : 'Start'}
           </button>
-          <button className="pomodoro-button" onClick={resetTimer}>
+          <button className="pomodoro-button bg-red-600" onClick={resetTimer}>
             <FiRotateCcw size={20} /> Reset
           </button>
         </div>

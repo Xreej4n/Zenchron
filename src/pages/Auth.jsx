@@ -1,21 +1,35 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login, register } from "../firebaseAuth";
 
 export default function Auth() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleAuth = () => {
-    if (isLogin) {
-      localStorage.setItem("user", JSON.stringify({ username: email }));
-    } else {
-      localStorage.setItem("user", JSON.stringify({ username }));
+  const handleAuth = async () => {
+    if (!email || !password || (!isLogin && !username)) {
+      alert("Please fill in all fields");
+      return;
     }
-    navigate("/");
-    window.location.reload();
+
+    try {
+      let uid;
+      if (isLogin) {
+        uid = await login(email, password);
+        localStorage.setItem("user", JSON.stringify({ uid, email }));
+      } else {
+        uid = await register(email, password, username);
+        localStorage.setItem("user", JSON.stringify({ uid, email, username }));
+      }
+
+      navigate("/");
+    } catch (error) {
+      alert("Authentication failed: " + error.message);
+      console.error(error);
+    }
   };
 
   return (
@@ -23,7 +37,6 @@ export default function Auth() {
       <div className="auth-wrapper">
         <h2 className="auth-title">{isLogin ? "Welcome Back" : "Create Account"}</h2>
 
-        {/* Input Fields */}
         {!isLogin && (
           <input
             type="text"
@@ -48,24 +61,22 @@ export default function Auth() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* Submit Button */}
         <button className="auth-button" onClick={handleAuth}>
           {isLogin ? "Log In" : "Register"}
         </button>
 
-        {/* Switch Mode */}
-        <div className="auth-switch">
+        <div className="auth-switch mt-4 text-sm text-white">
           {isLogin ? (
             <>
               Don't have an account?{" "}
-              <a href="#" onClick={() => setIsLogin(false)}>
+              <a href="#" onClick={() => setIsLogin(false)} className="underline text-blue-300">
                 Register here
               </a>
             </>
           ) : (
             <>
               Already have an account?{" "}
-              <a href="#" onClick={() => setIsLogin(true)}>
+              <a href="#" onClick={() => setIsLogin(true)} className="underline text-blue-300">
                 Log in here
               </a>
             </>

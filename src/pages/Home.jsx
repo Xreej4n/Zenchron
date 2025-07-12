@@ -6,20 +6,20 @@ export default function Home() {
         backgroundImage: `url('pic3.jpg')`,
       }}
     >
-      {/* Full-page blur and overlay below navbar */}
-      <div className="absolute inset-0 top-[6rem] z-0">
-        <div className="w-full h-full bg-black bg-opacity-40 backdrop-blur-md"></div>
-      </div>
+      {/* Optional: Overlay for contrast */}
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
       {/* 🏠 Text Content */}
-      <div className="relative z-10 text-center px-4 max-w-2xl mx-auto py-16">
-        <h1 className="space-grotesk" style={{ fontSize: '3.5rem', lineHeight: '1.2' }}>
-          Welcome to <span className="text-indigo-300 audiowide-regular bg-indigo-600 hover:bg-indigo-700 px-3 py-1 text-sm rounded text-white transition duration-300">Zenchron</span>
+      <div className="relative z-10 text-center px-4 max-w-2xl">
+        <h1 className="text-5xl font-extrabold text-white mb-6 tracking-wide drop-shadow-lg">
+          Welcome to <span className="text-indigo-300">Zenchron</span>
         </h1>
 
-        <p className="work-sans-body text-3xl md:text-4xl lg:text-5xl text-sky-100 mb-12 font-medium drop-shadow-xl italic tracking-wide">
-          Structure the Chaos. <span className="font-semibold text-indigo-200">Flow with Zen</span>
+        <p className="text-lg text-gray-100 mb-8 font-medium drop-shadow-sm italic">
+          Structure the Chaos. Flow with Zen
         </p>
+
+        
       </div>
     </div>
   );
