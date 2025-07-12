@@ -1,3 +1,10 @@
+/* === SPACE GROTESK FONT FOR SUBHEADINGS === */
+.space-grotesk {
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
 /* === NAVBAR ICON SPACING === */
 .navbar-icon {
   margin-right: 0.4em;
@@ -5,6 +12,9 @@
   vertical-align: middle;
 }
 /* === NAVBAR ICON STYLES === */
+.main-logo {
+  height: 5rem;
+}
 .navbar-link {
   color: #e0e7ff;
   font-weight: 500;
@@ -156,7 +166,7 @@ body {
 
 /* Base font and layout */
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
 
 /* Scrollbar styling */
@@ -277,11 +287,18 @@ body, button, input, a {
 
 /* App background */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   background: linear-gradient(to bottom right, #0f172a, #1e3a8a, #030712);
   color: #f9fafb;
   line-height: 1.6;
   min-height: 100vh;
+}
+/* === WORK SANS FONT UTILITY === */
+.work-sans-body {
+  font-family: "Work Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /* Scrollbar styling (modern browsers) */
@@ -301,6 +318,7 @@ h1, h2, h3, h4 {
   font-weight: 800;
   color: #e0f2fe;
   letter-spacing: 0.5px;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 a {

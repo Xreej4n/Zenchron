@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from 'react-router-dom';
 import {
   MdHome,
@@ -8,6 +9,7 @@ import {
   MdLogout
 } from 'react-icons/md';
 import { CgProfile } from 'react-icons/cg';
+import logo from '../assets/favicon.ico';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -21,9 +23,10 @@ export default function Navbar() {
 
   return (
     <nav className="navbar fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] max-w-6xl px-10 py-6 flex flex-col items-center justify-center">
-      {/* 🔶 Title + Auth/User Button */}
+      {/* Title + Auth/User Button */}
       <div className="w-full flex items-center justify-between mb-2">
-        <Link to="/" className="navbar-title hover:no-underline py-2">
+        <Link to="/" className="navbar-title hover:no-underline py-2 flex items-center gap-3">
+          <img src={logo} alt="Zenchron Logo" className="main-logo object-contain mr-2" style={{filter: 'drop-shadow(0 2px 8px #0ea5e9)'}} />
           <span className="audiowide-regular text-3xl font-extrabold tracking-wide leading-tight bg-gradient-to-r from-orange-600 via-orange-500 to-yellow-400 text-transparent bg-clip-text">
             Zenchron
           </span>
